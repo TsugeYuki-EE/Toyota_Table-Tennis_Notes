@@ -30,7 +30,7 @@ ENV NODE_OPTIONS=--max-old-space-size=3072
 RUN rm -rf .next node_modules/.cache
 
 RUN npx prisma generate
-RUN npm run build
+RUN npm run build -- --webpack
 
 FROM base AS runner
 ENV NODE_ENV=production

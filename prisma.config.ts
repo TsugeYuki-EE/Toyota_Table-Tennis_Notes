@@ -27,6 +27,7 @@ if (!process.env.DATABASE_URL) {
 }
 
 export default defineConfig({
+  earlyAccess: true,
   schema: "prisma/schema.prisma",
   migrations: {
     path: "prisma/migrations",
