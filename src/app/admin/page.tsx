@@ -46,6 +46,14 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
   const canManageRoles = true;
   const canManageSuperAdminFeatures = isSuperAdminNickname(adminMember.nickname);
 
+  interface AdminMember {
+    id: string;
+    name: string;
+    nickname: string | null;
+    grade: string | null;
+    role: "PLAYER" | "MANAGER" | "COACH" | "ADMIN";
+  }
+
   const membersRaw = await prisma.member.findMany({
     select: {
       id: true,
@@ -56,7 +64,7 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
     },
   });
 
-  const members = sortMembersByGradeAscending(membersRaw);
+  const members = sortMembersByGradeAscending(membersRaw) as AdminMember[];
 
   const configuredBaseUrl = process.env.NEXT_PUBLIC_APP_BASE_URL || process.env.RENDER_EXTERNAL_URL || "";
   const forwardedProto = headerStore.get("x-forwarded-proto") || "https";
@@ -110,6 +118,22 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
         </div>
 
         <AdminMemberTable members={members} canManageRoles={canManageRoles} />
+      </section>
+
+      <section className={styles.card}>
+        <h2>管理者専用機能</h2>
+        <div className={styles.inlineActions}>
+          {canManageSuperAdminFeatures ? (
+            <>
+              <Link className={styles.linkButton} href="/admin/super-admin">
+                admin 専用画面
+              </Link>
+              <Link className={styles.linkButton} href="/admin/feedback">
+                フィードバック一覧
+              </Link>
+            </>
+          ) : null}
+        </div>
       </section>
 
     </main>
