@@ -22,7 +22,7 @@ type GuideItem = {
 };
 
 const EXCLUDED_ROUTE_PREFIXES = ["/api"];
-const EXCLUDED_ROUTES = new Set(["/attendance", "/attendance/submit", "/practice-menus", "/practice-menus/new"]);
+const EXCLUDED_ROUTES = new Set(["/attendance", "/attendance/submit", "/practice-menus", "/practice-menus/new", "/admin/super-admin"]);
 
 const GUIDE_OVERRIDES: Array<{
   test: (route: string) => boolean;
@@ -91,16 +91,7 @@ const GUIDE_OVERRIDES: Array<{
     ],
     audience: "member",
   },
-  {
-    test: (route) => route.startsWith("/l/"),
-    title: "共有リンク入力",
-    summary: "配布されたトークンURLから出席を入力するページです。",
-    steps: [
-      "受け取ったURLを開いて入力画面へ進みます。",
-      "必要項目を送信すると期限内に1回分が記録されます。",
-    ],
-    audience: "support",
-  },
+
   {
     test: (route) => route === "/admin",
     title: "管理ダッシュボード",
@@ -130,6 +121,46 @@ const GUIDE_OVERRIDES: Array<{
       "公開後はユーザー向けページで表示確認します。",
     ],
     audience: "admin",
+  },
+  {
+    test: (route) => route === "/admin/events",
+    title: "予定管理",
+    summary: "練習・試合などのイベントを作成・編集・削除するページです。",
+    steps: [
+      "単体予定作成、複数予定作成、予定削除の機能が利用できます。",
+      "日程、イベントタイプ、対戦相手情報などを入力して保存します。",
+    ],
+    audience: "admin",
+  },
+  {
+    test: (route) => route === "/admin/manager",
+    title: "マネージャーウィンドウ",
+    summary: "部員の出席率と目標を管理するページです。",
+    steps: [
+      "部員一覧で出席率を確認できます。列の表示・非表示の切り替えが可能です。",
+      "全員の目標を表形式で確認・管理します。",
+    ],
+    audience: "admin",
+  },
+  {
+    test: (route) => route === "/match-feedbacks",
+    title: "試合フィードバック",
+    summary: "試合後のフィードバックを確認・記録するページです。",
+    steps: [
+      "試合一覧から対象試合を選択します。",
+      "各部員のパフォーマンスやフィードバックを確認・記録します。",
+    ],
+    audience: "member",
+  },
+  {
+    test: (route) => route === "/table-tennis-notes",
+    title: "卓球ノート",
+    summary: "日々の練習や試合で学んだことを記録するページです。",
+    steps: [
+      "本日のノートまたは過去の日付を選択します。",
+      "気付きや改善点を自由な形式で記入して保存します。",
+    ],
+    audience: "member",
   },
   {
     test: (route) => route.startsWith("/admin/members/") && route.endsWith("/attendance"),

@@ -19,7 +19,6 @@ type AdminPageProps = {
   searchParams: Promise<{
     error?: string;
     ok?: string;
-    newToken?: string;
   }>;
 };
 
@@ -92,12 +91,6 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
 
       {params.error ? <p className={styles.error}>エラー: {params.error}</p> : null}
       {params.ok ? <p className={styles.ok}>保存しました: {params.ok}</p> : null}
-      {params.newToken ? (
-        <section className={styles.notice}>
-          <p>新しい入力リンクを作成しました。</p>
-          <code>{`${appBaseUrl}/l/${params.newToken}`}</code>
-        </section>
-      ) : null}
 
       <section className={styles.card}>
         <h2>予定管理</h2>

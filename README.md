@@ -13,7 +13,6 @@
 - 管理者通達の表示
 - リリースノート管理/閲覧
 - フィードバック送信/閲覧
-- 共有リンクによる出席・体重入力
 
 ## 現在のWebページ構成
 
@@ -29,7 +28,6 @@
 - `/player-scores/new`: 自分の試合得点入力
 - `/feedback`: フィードバック送信
 - `/release-notes`: 公開リリースノート閲覧
-- `/l/[token]`: 共有リンク入力（出席/体重）
 
 ### 管理者/マネージャー向け
 
@@ -84,15 +82,14 @@
 - `PlayerMatchScore`: 試合ごとの部員スコア
 - `PlayerMatchPeriodStat`: 前半/後半ごとの部員スタッツ
 - `PracticeMenu`: 練習メニュー記録
-- `InputToken`: 共有入力リンク
 - `ReleaseNote`: リリースノート
 - `Feedback`: 部員からのフィードバック
 - `AdminAnnouncement`: 期間表示の通達
 
 ### 主なリレーション
 
-- `Member` 1 - N `AttendanceRecord`, `WeightRecord`, `InputToken`, `PlayerMatchScore`, `PlayerMatchPeriodStat`
-- `AttendanceEvent` 1 - N `AttendanceRecord`, `InputToken`, `MatchRecord`
+- `Member` 1 - N `AttendanceRecord`, `WeightRecord`, `PlayerMatchScore`, `PlayerMatchPeriodStat`
+- `AttendanceEvent` 1 - N `AttendanceRecord`, `MatchRecord`
 - `MatchRecord` 1 - N `PlayerMatchScore`, `MatchPeriodScore`, `PlayerMatchPeriodStat`
 - `Member` 1 - N `ReleaseNote`（作成者）
 - `Member` 1 - N `AdminAnnouncement`（作成者）
@@ -126,7 +123,6 @@ npm install
 ```env
 DATABASE_URL=postgresql://USER:PASSWORD@HOST:5432/DBNAME?schema=public
 ADMIN_VIEW_KEY=toyota-table-tennis-admin
-NEXT_PUBLIC_APP_BASE_URL=http://localhost:3000
 ```
 
 3. マイグレーションを適用して起動
@@ -176,8 +172,7 @@ Dockerデプロイを想定しています。
 - `DATABASE_URL`: PostgreSQL接続文字列
 - `POSTGRES_PRISMA_URL` / `POSTGRES_URL` / `NEON_DATABASE_URL` / `RENDER_POSTGRESQL_URL`: `DATABASE_URL` の代替
 - `ADMIN_VIEW_KEY`: 管理画面キー
-- `NEXT_PUBLIC_APP_BASE_URL`: 共有リンクのベースURL
-- `RENDER_EXTERNAL_URL`: Render公開URL（`NEXT_PUBLIC_APP_BASE_URL` 未設定時に利用）
+- `RENDER_EXTERNAL_URL`: Render公開URL
 
 ## 開発用コマンド
 
@@ -233,7 +228,6 @@ npm run db:studio         # Prisma Studio起動
 - `src/app/player-scores/new/page.tsx`: 個人得点入力
 - `src/app/feedback/page.tsx`: フィードバック送信
 - `src/app/release-notes/page.tsx`: 公開リリースノート
-- `src/app/l/[token]/page.tsx`: 共有リンク入力
 
 管理者向けページ:
 
@@ -247,12 +241,6 @@ npm run db:studio         # Prisma Studio起動
 - `src/app/admin/members/[memberId]/scores/page.tsx`: 得点履歴
 - `src/app/admin/release-notes/page.tsx`: リリースノート管理
 - `src/app/admin/feedback/page.tsx`: フィードバック一覧
-
-互換リダイレクトページ:
-
-- `src/app/attendance/page.tsx`: `/` へリダイレクト
-- `src/app/attendance/submit/page.tsx`: `/` へリダイレクト
-- `src/app/practice-menus/page.tsx`: `/` へリダイレクト
 
 ### `src/app/api`（Route Handlers）
 
