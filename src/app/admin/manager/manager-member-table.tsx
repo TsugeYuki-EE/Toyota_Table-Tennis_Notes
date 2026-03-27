@@ -29,18 +29,16 @@ function roleLabel(role: ManagerMemberRow["role"]): string {
 
 export function ManagerMemberTable({ members }: ManagerMemberTableProps) {
   const [showAttendanceRate, setShowAttendanceRate] = useState(false);
-  const [showScoringRate, setShowScoringRate] = useState(false);
   const [showYearlyGoal, setShowYearlyGoal] = useState(false);
   const [showMonthlyGoal, setShowMonthlyGoal] = useState(false);
 
   const colSpan = useMemo(() => {
     let count = 4;
     if (showAttendanceRate) count += 1;
-    if (showScoringRate) count += 1;
     if (showYearlyGoal) count += 1;
     if (showMonthlyGoal) count += 1;
     return count;
-  }, [showAttendanceRate, showScoringRate, showYearlyGoal, showMonthlyGoal]);
+  }, [showAttendanceRate, showYearlyGoal, showMonthlyGoal]);
 
   return (
     <>
@@ -52,14 +50,6 @@ export function ManagerMemberTable({ members }: ManagerMemberTableProps) {
             onChange={(event) => setShowAttendanceRate(event.target.checked)}
           />
           <span>出席率</span>
-        </label>
-        <label className={styles.checkboxLabel}>
-          <input
-            type="checkbox"
-            checked={showScoringRate}
-            onChange={(event) => setShowScoringRate(event.target.checked)}
-          />
-          <span>得点率</span>
         </label>
         <label className={styles.checkboxLabel}>
           <input
@@ -87,7 +77,6 @@ export function ManagerMemberTable({ members }: ManagerMemberTableProps) {
               <th>学年</th>
               <th>役職</th>
               {showAttendanceRate ? <th>出席率</th> : null}
-              {showScoringRate ? <th>得点率</th> : null}
               {showYearlyGoal ? <th>一年の目標</th> : null}
               {showMonthlyGoal ? <th>その月の目標</th> : null}
               <th>アクション</th>
@@ -107,9 +96,6 @@ export function ManagerMemberTable({ members }: ManagerMemberTableProps) {
                   <td>
                     {member.attendanceRate == null ? "-" : `${member.attendanceRate.toFixed(1)}%`}
                   </td>
-                ) : null}
-                {showScoringRate ? (
-                  <td>{member.scoringRate == null ? "-" : `${member.scoringRate.toFixed(1)}%`}</td>
                 ) : null}
                 {showYearlyGoal ? <td>{member.yearlyGoal || "-"}</td> : null}
                 {showMonthlyGoal ? <td>{member.monthlyGoal || "-"}</td> : null}

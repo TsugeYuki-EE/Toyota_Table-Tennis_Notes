@@ -110,6 +110,16 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
       </section>
 
       <section className={styles.card}>
+        <h2>部員マネージャー</h2>
+        <p className={styles.meta}>出席率、得点率、部員の目標を確認できます。</p>
+        <div className={styles.inlineActions}>
+          <Link className={styles.linkButton} href="/admin/manager">
+            部員マネージャーウィンドウへ
+          </Link>
+        </div>
+      </section>
+
+      <section className={styles.card}>
         <div className={styles.cardHeader}>
           <div>
             <h2>部員一覧</h2>

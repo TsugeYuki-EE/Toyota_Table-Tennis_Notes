@@ -101,7 +101,7 @@ export default async function Home({ searchParams }: HomePageProps) {
   const monthParam = toMonthParam(currentMonth);
   const monthQuery = `?month=${monthParam}`;
 
-  const [events, practiceMenus, activeAnnouncement] = await Promise.all([
+  const [events, practiceMenus, activeAnnouncement, attendanceRecords, latestNote] = await Promise.all([
     prisma.attendanceEvent.findMany({
       where: {
         scheduledAt: {
@@ -130,7 +130,31 @@ export default async function Home({ searchParams }: HomePageProps) {
       },
       orderBy: { createdAt: "desc" },
     }),
+    prisma.attendanceRecord.findMany({
+      where: {
+        memberId: member.id,
+        event: {
+          eventType: AttendanceEventType.PRACTICE,
+        },
+      },
+      include: {
+        event: true,
+      },
+    }),
+    prisma.tableTennisNote.findFirst({
+      where: {
+        memberId: member.id,
+      },
+      orderBy: { createdAt: "desc" },
+    }),
   ]);
+
+  // 出席率を計算
+  const validAttendances = attendanceRecords.filter(
+    (record) => record.status === "ATTEND" || record.status === "LATE" || record.status === "ABSENT"
+  );
+  const attendCount = validAttendances.filter((record) => record.status === "ATTEND" || record.status === "LATE").length;
+  const attendanceRate = validAttendances.length === 0 ? null : (attendCount / validAttendances.length) * 100;
 
   const scheduleMap = new Map<string, Set<"練習" | "試合">>();
   const eventDetailMap = new Map<string, { practice: string[]; match: string[] }>();
@@ -272,6 +296,35 @@ export default async function Home({ searchParams }: HomePageProps) {
                 </Link>
               );
             })}
+          </div>
+        </section>
+
+        <section className={styles.summaryCard}>
+          <div className={styles.summaryGrid}>
+            <article className={styles.summaryItem}>
+              <h3>出席率</h3>
+              <p className={styles.summaryValue}>
+                {attendanceRate === null ? "データなし" : `${attendanceRate.toFixed(1)}%`}
+              </p>
+              <p className={styles.summarySubtext}></p>
+            </article>
+            {latestNote ? (
+              <article className={styles.summaryItem}>
+                <h3>最新のノート</h3>
+                <p className={styles.latestNoteContent}>{latestNote.content}</p>
+                <Link href="/table-tennis-notes" className={styles.summaryLink}>
+                  ノート一覧へ →
+                </Link>
+              </article>
+            ) : (
+              <article className={styles.summaryItem}>
+                <h3>最新のノート</h3>
+                <p className={styles.summarySubtext}>まだノートが作成されていません</p>
+                <Link href="/table-tennis-notes" className={styles.summaryLink}>
+                  ノートを作成する →
+                </Link>
+              </article>
+            )}
           </div>
         </section>
 

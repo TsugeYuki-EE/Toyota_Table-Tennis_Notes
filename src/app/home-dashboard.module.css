@@ -572,6 +572,76 @@
   text-decoration: none;
 }
 
+.summaryCard {
+  background: #ffffff;
+  border: 1px solid #e4d6da;
+  border-radius: 16px;
+  padding: 20px;
+  display: grid;
+  gap: 14px;
+}
+
+.summaryGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+}
+
+.summaryItem {
+  border: 1px solid #e9dfe3;
+  border-radius: 12px;
+  padding: 16px;
+  background: #fbfdff;
+  display: grid;
+  gap: 8px;
+}
+
+.summaryItem h3 {
+  color: #284358;
+  font-size: 16px;
+  margin: 0;
+}
+
+.summaryValue {
+  color: #be1026;
+  font-size: 28px;
+  font-weight: 700;
+  margin: 4px 0 0 0;
+  line-height: 1.2;
+}
+
+.summarySubtext {
+  color: #6a585d;
+  font-size: 12px;
+  margin: 0;
+}
+
+.latestNoteContent {
+  color: #4a3f42;
+  line-height: 1.6;
+  font-size: 14px;
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  word-break: break-word;
+}
+
+.summaryLink {
+  display: inline-flex;
+  color: #be1026;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 13px;
+  margin-top: 4px;
+}
+
+.summaryLink:hover {
+  text-decoration: underline;
+}
+
 @media (max-width: 640px) {
   .page {
     padding: 20px 14px 110px;
