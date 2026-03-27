@@ -11,6 +11,7 @@ import {
   toDateKey,
 } from "@/lib/date-format";
 import { isJapaneseHolidayDateKey } from "@/lib/japanese-holiday";
+import { autoMarkPreviousDayUnansweredAsAbsent } from "@/lib/attendance-auto-absent";
 import { getSessionMember } from "@/lib/member-session";
 import { prisma } from "@/lib/prisma";
 import { FloatingMobileTabs } from "./floating-mobile-tabs";
@@ -87,6 +88,8 @@ export default async function Home({ searchParams }: HomePageProps) {
     redirect("/auth");
   }
 
+  await autoMarkPreviousDayUnansweredAsAbsent(member.id);
+
   const currentMonth = parseMonthParam(params.month);
   const currentMonthParts = getJstDateParts(currentMonth);
   const { startUtc: monthStartUtc, endUtc: nextMonthUtc } = getJstMonthRangeUtc(
@@ -134,7 +137,9 @@ export default async function Home({ searchParams }: HomePageProps) {
       where: {
         memberId: member.id,
         event: {
-          eventType: AttendanceEventType.PRACTICE,
+          eventType: {
+            in: [AttendanceEventType.PRACTICE, AttendanceEventType.MATCH],
+          },
         },
       },
       include: {
@@ -306,7 +311,7 @@ export default async function Home({ searchParams }: HomePageProps) {
               <p className={styles.summaryValue}>
                 {attendanceRate === null ? "データなし" : `${attendanceRate.toFixed(1)}%`}
               </p>
-              <p className={styles.summarySubtext}></p>
+              <p className={styles.summarySubtext}>（練習・試合を含む）</p>
             </article>
             {latestNote ? (
               <article className={styles.summaryItem}>

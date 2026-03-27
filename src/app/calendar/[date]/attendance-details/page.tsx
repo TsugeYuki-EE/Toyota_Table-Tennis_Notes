@@ -3,6 +3,7 @@ import { AttendanceStatus } from "@prisma/client";
 import { notFound, redirect } from "next/navigation";
 import { getJstDayRangeFromDateKey } from "@/lib/date-format";
 import { LocalDate, LocalDateTime } from "@/components/local-date-time";
+import { autoMarkPreviousDayUnansweredAsAbsent } from "@/lib/attendance-auto-absent";
 import { getSessionMember } from "@/lib/member-session";
 import { prisma } from "@/lib/prisma";
 import styles from "@/app/member-page-shared.module.css";
@@ -66,6 +67,8 @@ export default async function AttendanceDetailsPage({ params }: PageProps) {
   if (!member) {
     redirect("/auth");
   }
+
+  await autoMarkPreviousDayUnansweredAsAbsent(member.id);
 
   const selectedDate = dateFromKey(date);
   const { startUtc: dayStart, endUtc: dayEnd } = getJstDayRangeFromDateKey(date);

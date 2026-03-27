@@ -2,6 +2,7 @@ import Link from "next/link";
 import { AttendanceStatus } from "@prisma/client";
 import { notFound, redirect } from "next/navigation";
 import { canAccessAdminByMember } from "@/lib/admin-access";
+import { autoMarkPreviousDayUnansweredAsAbsent } from "@/lib/attendance-auto-absent";
 import { getJstDayRangeFromDateKey } from "@/lib/date-format";
 import { LocalDate, LocalDateTime } from "@/components/local-date-time";
 import { getSessionMember } from "@/lib/member-session";
@@ -53,6 +54,8 @@ export default async function CalendarDatePage({ params, searchParams }: PagePro
   if (!member) {
     redirect("/auth");
   }
+
+  await autoMarkPreviousDayUnansweredAsAbsent(member.id);
 
   const canViewMatchFeedbackList = canAccessAdminByMember(member);
 

@@ -1,4 +1,5 @@
 import { getSessionMember } from "@/lib/member-session";
+import { autoMarkPreviousDayUnansweredAsAbsent } from "@/lib/attendance-auto-absent";
 
 const SUPER_ADMIN_NICKNAME = "admin";
 const SUPER_ADMIN_LOGIN_PASSWORD = "devdev";
@@ -29,6 +30,8 @@ export async function getAuthorizedAdminMember() {
   if (!canAccessAdminByMember(member)) {
     return null;
   }
+
+  await autoMarkPreviousDayUnansweredAsAbsent(member.id);
 
   return member;
 }
