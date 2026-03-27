@@ -5,6 +5,9 @@ const databaseUrlAliases = [
   "POSTGRES_URL",
   "NEON_DATABASE_URL",
   "RENDER_POSTGRESQL_URL",
+  "RENDER_DATABASE_URL",
+  "RENDER_INTERNAL_DATABASE_URL",
+  "POSTGRES_INTERNAL_URL",
 ];
 
 if (!process.env.DATABASE_URL) {
@@ -17,9 +20,20 @@ if (!process.env.DATABASE_URL) {
   }
 }
 
+if (
+  !process.env.DATABASE_URL &&
+  process.env.PGHOST &&
+  process.env.PGUSER &&
+  process.env.PGPASSWORD &&
+  process.env.PGDATABASE
+) {
+  const pgPort = process.env.PGPORT || "5432";
+  process.env.DATABASE_URL = `postgresql://${process.env.PGUSER}:${process.env.PGPASSWORD}@${process.env.PGHOST}:${pgPort}/${process.env.PGDATABASE}?schema=public`;
+}
+
 if (!process.env.DATABASE_URL) {
   throw new Error(
-    "DATABASE_URL is not set. Set DATABASE_URL or one of POSTGRES_PRISMA_URL / POSTGRES_URL / NEON_DATABASE_URL / RENDER_POSTGRESQL_URL."
+    "DATABASE_URL is not set. Set DATABASE_URL or one of POSTGRES_PRISMA_URL / POSTGRES_URL / NEON_DATABASE_URL / RENDER_POSTGRESQL_URL / RENDER_DATABASE_URL / RENDER_INTERNAL_DATABASE_URL / POSTGRES_INTERNAL_URL (or provide PGHOST/PGPORT/PGUSER/PGPASSWORD/PGDATABASE)."
   );
 }
 
