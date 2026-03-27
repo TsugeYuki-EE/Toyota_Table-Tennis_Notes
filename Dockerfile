@@ -22,12 +22,15 @@ ENV DATABASE_URL=postgresql://postgres:postgres@localhost:5432/postgres?schema=p
 ENV ADMIN_VIEW_KEY=toyota-table-tennis-admin
 ENV NEXT_PUBLIC_APP_BASE_URL=http://localhost:3000
 
+# Optimize build for constrained environments
+ENV NODE_ENV=production
+ENV NODE_OPTIONS=--max-old-space-size=3072
+
 # Clean any previous build artifacts and caches
 RUN rm -rf .next node_modules/.cache
 
 RUN npx prisma generate
-# Increase Node.js memory for Turbopack to prevent heap errors
-RUN NODE_OPTIONS=--max-old-space-size=2048 npm run build
+RUN npm run build
 
 FROM base AS runner
 ENV NODE_ENV=production
