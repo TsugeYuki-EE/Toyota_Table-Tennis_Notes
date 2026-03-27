@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { AttendanceStatus } from "@prisma/client";
 import { notFound, redirect } from "next/navigation";
-import { canAccessAdminByMember } from "@/lib/admin-access";
 import { getJstDayRangeFromDateKey } from "@/lib/date-format";
 import { LocalDate, LocalDateTime } from "@/components/local-date-time";
 import { getSessionMember } from "@/lib/member-session";
@@ -55,7 +54,6 @@ export default async function CalendarDatePage({ params, searchParams }: PagePro
   }
 
   const selectedDate = dateFromKey(date);
-  const canViewAttendanceDetails = canAccessAdminByMember(member);
   const { startUtc: dayStart, endUtc: dayEnd } = getJstDayRangeFromDateKey(date);
 
   const [players, events, matches, practiceMenus] = await Promise.all([
@@ -195,11 +193,9 @@ export default async function CalendarDatePage({ params, searchParams }: PagePro
                 <button type="submit" className={styles.button}>このイベントに提出する</button>
               </form>
 
-              {canViewAttendanceDetails ? (
-                <Link href={`/calendar/${date}/attendance-details`} className={styles.secondaryLink}>
-                  出欠詳細情報を見る
-                </Link>
-              ) : null}
+              <Link href={`/calendar/${date}/attendance-details`} className={styles.secondaryLink}>
+                出欠詳細情報を見る
+              </Link>
 
               <p className={styles.meta}>
                 自分の現在回答: {myRecord ? <>{statusLabel(myRecord.status)} (<LocalDateTime value={myRecord.submittedAt} />)</> : "未回答"}

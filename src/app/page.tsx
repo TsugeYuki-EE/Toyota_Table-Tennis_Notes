@@ -132,27 +132,31 @@ export default async function Home({ searchParams }: HomePageProps) {
     }),
   ]);
 
-  const scheduleMap = new Map<string, Set<"練習">>();
-  const eventDetailMap = new Map<string, { practice: string[] }>();
+  const scheduleMap = new Map<string, Set<"練習" | "試合">>();
+  const eventDetailMap = new Map<string, { practice: string[]; match: string[] }>();
 
   for (const event of events) {
     const key = toDateKey(event.scheduledAt);
-    const current = scheduleMap.get(key) || new Set<"練習">();
-    const label = "練習";
+    const current = scheduleMap.get(key) || new Set<"練習" | "試合">();
+    const label = event.eventType === AttendanceEventType.MATCH ? "試合" : "練習";
     current.add(label);
     scheduleMap.set(key, current);
 
     const detailText = buildEventDetailText(event.matchDetail, event.note);
     if (detailText) {
-      const details = eventDetailMap.get(key) || { practice: [] };
-      details.practice.push(detailText);
+      const details = eventDetailMap.get(key) || { practice: [], match: [] };
+      if (label === "試合") {
+        details.match.push(detailText);
+      } else {
+        details.practice.push(detailText);
+      }
       eventDetailMap.set(key, details);
     }
   }
 
   for (const practice of practiceMenus) {
     const key = toDateKey(practice.practiceDate);
-    const current = scheduleMap.get(key) || new Set<"練習">();
+    const current = scheduleMap.get(key) || new Set<"練習" | "試合">();
     current.add("練習");
     scheduleMap.set(key, current);
   }
@@ -249,7 +253,7 @@ export default async function Home({ searchParams }: HomePageProps) {
                   <div className={dayNumberClassName}>{dateParts.day}</div>
                   <div className={styles.dayItems}>
                     {schedules.map((item, index) => {
-                      const detailsByType = eventDetails?.practice;
+                      const detailsByType = item === "試合" ? eventDetails?.match : eventDetails?.practice;
                       const tooltip = detailsByType && detailsByType.length > 0
                         ? detailsByType.join("\n----------------\n")
                         : undefined;
@@ -257,7 +261,7 @@ export default async function Home({ searchParams }: HomePageProps) {
                       return (
                         <span
                           key={`${item}-${index}`}
-                          className={`${styles.badge} ${styles.badgePractice}`}
+                          className={`${styles.badge} ${item === "試合" ? styles.badgeMatch : styles.badgePractice}`}
                           title={tooltip}
                         >
                           {item}

@@ -61,6 +61,7 @@ model Member {
   releaseNotes        ReleaseNote[]      @relation("ReleasesCreatedBy")
   announcements       AdminAnnouncement[] @relation("AnnouncementsCreatedBy")
   feedbacks           Feedback[]
+  matchFeedbacks      MatchFeedback[]
 }
 
 /// 出席確認したいイベント本体です。
@@ -76,6 +77,7 @@ model AttendanceEvent {
   records     AttendanceRecord[]
   tokens      InputToken[]
   matches     MatchRecord[]
+  matchFeedbacks MatchFeedback[]
   draft       MatchScoreDraft?
 }
 
@@ -262,6 +264,21 @@ model Feedback {
   member             Member   @relation(fields: [memberId], references: [id], onDelete: Cascade)
 
   @@index([createdAt])
+}
+
+/// 試合の振り返りです。各部員が試合ごとに1つ記録できます。
+model MatchFeedback {
+  id          String   @id @default(cuid())
+  attendanceEventId String
+  memberId    String
+  feedback    String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @default(now()) @updatedAt
+  event       AttendanceEvent @relation(fields: [attendanceEventId], references: [id], onDelete: Cascade)
+  member      Member          @relation(fields: [memberId], references: [id], onDelete: Cascade)
+
+  @@unique([attendanceEventId, memberId])
+  @@index([attendanceEventId])
 }
 
 /// 管理者が期間指定で表示する通達メッセージです。

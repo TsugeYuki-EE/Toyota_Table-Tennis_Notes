@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { AttendanceStatus } from "@prisma/client";
 import { notFound, redirect } from "next/navigation";
-import { canAccessAdminByMember } from "@/lib/admin-access";
 import { getJstDayRangeFromDateKey } from "@/lib/date-format";
 import { LocalDate, LocalDateTime } from "@/components/local-date-time";
 import { getSessionMember } from "@/lib/member-session";
@@ -68,18 +67,6 @@ export default async function AttendanceDetailsPage({ params }: PageProps) {
     redirect("/auth");
   }
 
-  if (!canAccessAdminByMember(member)) {
-    return (
-      <main className={styles.page}>
-        <section className={styles.card}>
-          <h1>出欠詳細情報へのアクセス権限がありません</h1>
-          <p className={styles.meta}>管理者権限のあるユーザーのみ閲覧できます。</p>
-          <Link href={`/calendar/${date}`} className={styles.secondaryLink}>日付ページへ戻る</Link>
-        </section>
-      </main>
-    );
-  }
-
   const selectedDate = dateFromKey(date);
   const { startUtc: dayStart, endUtc: dayEnd } = getJstDayRangeFromDateKey(date);
 
@@ -107,7 +94,7 @@ export default async function AttendanceDetailsPage({ params }: PageProps) {
     <main className={styles.page}>
       <header className={styles.header}>
         <h1><LocalDate value={selectedDate} /> の出欠詳細</h1>
-        <p>管理者向けに、各部員の回答状況とコメントを確認できます。</p>
+        <p>各部員の回答状況とコメントを確認できます。</p>
       </header>
 
       <nav className={styles.nav}>

@@ -38,6 +38,7 @@ export function FloatingMobileTabs({ monthQuery }: FloatingMobileTabsProps) {
       aria-label="メイン操作タブ"
     >
       <Link href={`/self/profile${monthQuery}`} className={styles.mobileTab}>プロフィール</Link>
+      <Link href="/match-feedbacks" className={styles.mobileTab}>試合振り返り</Link>
     </nav>
   );
 }
