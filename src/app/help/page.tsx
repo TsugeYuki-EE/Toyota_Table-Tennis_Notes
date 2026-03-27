@@ -23,6 +23,39 @@ type GuideItem = {
 
 const EXCLUDED_ROUTE_PREFIXES = ["/api"];
 const EXCLUDED_ROUTES = new Set(["/attendance", "/attendance/submit", "/practice-menus", "/practice-menus/new", "/admin/super-admin"]);
+const FALLBACK_ROUTES = [
+  "/",
+  "/auth",
+  "/feedback",
+  "/release-notes",
+  "/calendar/[date]",
+  "/calendar/[date]/attendance-details",
+  "/self/profile",
+  "/self/weight",
+  "/self/weight-history",
+  "/match-feedbacks",
+  "/match-feedbacks/[eventId]",
+  "/table-tennis-notes",
+  "/table-tennis-notes/today",
+  "/table-tennis-notes/[dateKey]",
+  "/admin",
+  "/admin/events",
+  "/admin/events/bulk",
+  "/admin/events/edit",
+  "/admin/events/single",
+  "/admin/events/[eventId]/feedbacks",
+  "/admin/manager",
+  "/admin/manager/goals",
+  "/admin/feedback",
+  "/admin/release-notes",
+  "/admin/members/[memberId]",
+  "/admin/members/[memberId]/attendance",
+  "/admin/members/[memberId]/weight",
+  "/admin/members/[memberId]/scores",
+  "/admin/members/[memberId]/match-feedbacks",
+  "/admin/members/[memberId]/table-tennis-notes",
+  "/help",
+];
 
 const GUIDE_OVERRIDES: Array<{
   test: (route: string) => boolean;
@@ -185,7 +218,13 @@ const GUIDE_OVERRIDES: Array<{
 ];
 
 async function collectAppPageRoutes(dirPath: string, segments: string[] = []): Promise<string[]> {
-  const entries = await readdir(dirPath, { withFileTypes: true });
+  let entries;
+  try {
+    entries = await readdir(dirPath, { withFileTypes: true });
+  } catch {
+    // 本番環境で src/app が参照できない場合は空配列を返し、呼び出し側でフォールバックします。
+    return [];
+  }
   const routes: string[] = [];
 
   const hasPage = entries.some((entry) => entry.isFile() && entry.name === "page.tsx");
@@ -266,7 +305,8 @@ function isDirectNavigableRoute(route: string): boolean {
 export default async function HelpPage() {
   const appDir = path.join(process.cwd(), "src", "app");
   const allRoutes = await collectAppPageRoutes(appDir);
-  const guides = sortGuideItems(allRoutes.filter(includeRoute).map(routeToGuide));
+  const sourceRoutes = allRoutes.length > 0 ? allRoutes : FALLBACK_ROUTES;
+  const guides = sortGuideItems(sourceRoutes.filter(includeRoute).map(routeToGuide));
 
   const grouped: Record<GuideAudience, GuideItem[]> = {
     member: guides.filter((item) => item.audience === "member"),
@@ -292,8 +332,8 @@ export default async function HelpPage() {
       <section className={styles.noteCard}>
         <h2>使い方一覧について</h2>
         <p>
-          この一覧は src/app 配下の page.tsx を読み取り、自動生成しています。
-          ルートを追加するとヘルプにも自動で反映されます。
+          この一覧は src/app 配下の page.tsx を読み取って自動生成します。
+          本番環境などで読み取りできない場合は、既知のルート一覧を表示します。
         </p>
       </section>
 
