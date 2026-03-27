@@ -62,6 +62,7 @@ model Member {
   announcements       AdminAnnouncement[] @relation("AnnouncementsCreatedBy")
   feedbacks           Feedback[]
   matchFeedbacks      MatchFeedback[]
+  tableTennisNotes    TableTennisNote[]
 }
 
 /// 出席確認したいイベント本体です。
@@ -279,6 +280,20 @@ model MatchFeedback {
 
   @@unique([attendanceEventId, memberId])
   @@index([attendanceEventId])
+}
+
+/// 卓球ノートです。部員ごとに日付単位で1件保存します。
+model TableTennisNote {
+  id          String   @id @default(cuid())
+  memberId    String
+  noteDateKey String
+  content     String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @default(now()) @updatedAt
+  member      Member   @relation(fields: [memberId], references: [id], onDelete: Cascade)
+
+  @@unique([memberId, noteDateKey])
+  @@index([memberId, noteDateKey])
 }
 
 /// 管理者が期間指定で表示する通達メッセージです。

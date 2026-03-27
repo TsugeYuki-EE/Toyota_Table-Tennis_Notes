@@ -56,8 +56,6 @@ export default async function MemberAttendancePage({ params }: PageProps) {
 
       <nav className={styles.nav}>
         <Link className={styles.secondaryLink} href={`/admin/members/${member.id}`}>部員概要へ</Link>
-        <Link className={styles.primaryLink} href={`/admin/members/${member.id}/weight`}>体重推移</Link>
-        <Link className={styles.primaryLink} href={`/admin/members/${member.id}/scores`}>個人スコア</Link>
       </nav>
 
       <section className={styles.chartGrid}>

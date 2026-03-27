@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { AttendanceStatus } from "@prisma/client";
 import { notFound, redirect } from "next/navigation";
+import { canAccessAdminByMember } from "@/lib/admin-access";
 import { getJstDayRangeFromDateKey } from "@/lib/date-format";
 import { LocalDate, LocalDateTime } from "@/components/local-date-time";
 import { getSessionMember } from "@/lib/member-session";
@@ -52,6 +53,8 @@ export default async function CalendarDatePage({ params, searchParams }: PagePro
   if (!member) {
     redirect("/auth");
   }
+
+  const canViewMatchFeedbackList = canAccessAdminByMember(member);
 
   const selectedDate = dateFromKey(date);
   const { startUtc: dayStart, endUtc: dayEnd } = getJstDayRangeFromDateKey(date);
@@ -196,6 +199,12 @@ export default async function CalendarDatePage({ params, searchParams }: PagePro
               <Link href={`/calendar/${date}/attendance-details`} className={styles.secondaryLink}>
                 出欠詳細情報を見る
               </Link>
+
+              {canViewMatchFeedbackList && event.eventType === "MATCH" ? (
+                <Link href={`/admin/events/${event.id}/feedbacks?returnTo=${encodeURIComponent(`/calendar/${date}?from=home`)}`} className={styles.secondaryLink}>
+                  試合振り返り一覧を見る
+                </Link>
+              ) : null}
 
               <p className={styles.meta}>
                 自分の現在回答: {myRecord ? <>{statusLabel(myRecord.status)} (<LocalDateTime value={myRecord.submittedAt} />)</> : "未回答"}

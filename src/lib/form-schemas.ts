@@ -83,6 +83,10 @@ export const feedbackSubmitSchema = z.object({
     .max(1000, "フィードバックは1000文字以内で入力してください"),
   redirectTo: z.string().trim().optional(),
 });
+
+// 試合登録フォームです。
+export const matchSchema = z.object({
+  opponent: z.string().trim().min(1, "対戦相手は必須です"),
   matchDate: z.string().trim().regex(dateOrDateTimeRegex, "日時を選択してください"),
   ourScore: z.coerce.number().int().min(0),
   theirScore: z.coerce.number().int().min(0),

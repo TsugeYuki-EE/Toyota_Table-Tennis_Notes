@@ -543,9 +543,9 @@
   transition: bottom 0.18s ease;
   z-index: 30;
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 8px;
-  width: min(760px, calc(100vw - 24px));
+  width: min(560px, calc(100vw - 24px));
   padding: 8px;
   border: 1px solid #d4e1ea;
   border-radius: 14px;
@@ -599,10 +599,7 @@
   }
 
   .mobileTabs {
-    left: 12px;
-    right: 12px;
-    transform: none;
-    width: auto;
+    width: min(560px, calc(100vw - 24px));
   }
 
   .calendarHeader {
