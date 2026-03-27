@@ -153,8 +153,8 @@ export default async function SuperAdminPage({ searchParams }: SuperAdminPagePro
       </section>
 
       <section className={styles.card}>
-        <h2>予定・試合スコアの全削除</h2>
-        <p className={styles.meta}>予定、試合スコア、試合イベント連動の入力リンクをまとめて削除します。admin ユーザーのみ実行できます。元に戻せません。</p>
+        <h2>予定の全削除</h2>
+        <p className={styles.meta}>すべての出席予定データを削除します。admin ユーザーのみ実行できます。元に戻せません。</p>
         <form action="/api/admin-data/cleanup" method="post" className={styles.form}>
           <input type="hidden" name="intent" value="delete-all-schedules-and-match-scores" />
           <input type="hidden" name="redirectTo" value="/admin/super-admin" />

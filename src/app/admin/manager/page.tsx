@@ -45,16 +45,6 @@ export default async function AdminManagerPage() {
           shotAttempts: true,
         },
       },
-      weights: {
-        orderBy: {
-          submittedAt: "desc",
-        },
-        take: 1,
-        select: {
-          weightKg: true,
-          submittedAt: true,
-        },
-      },
     },
   });
 
@@ -79,7 +69,6 @@ export default async function AdminManagerPage() {
     const totalGoals = member.playerScores.reduce((sum, score) => sum + score.goals, 0);
     const totalShotAttempts = member.playerScores.reduce((sum, score) => sum + score.shotAttempts, 0);
     const scoringRate = totalShotAttempts === 0 ? null : (totalGoals / totalShotAttempts) * 100;
-    const latestWeight = member.weights[0] ?? null;
     const goal = goalMap.get(member.id);
 
     return {
@@ -92,8 +81,6 @@ export default async function AdminManagerPage() {
       monthlyGoal: goal?.monthlyGoal ?? null,
       attendanceRate,
       scoringRate,
-      latestWeightKg: latestWeight?.weightKg ?? null,
-      isLatestWeightToday: latestWeight ? toDateKey(latestWeight.submittedAt) === todayKey : false,
     };
   });
 
@@ -102,6 +89,9 @@ export default async function AdminManagerPage() {
       <header className={styles.header}>
         <h1>マネージャーウィンドウ</h1>
         <p>部員情報に加えて、出席率・得点率・最新体重を確認できます。</p>
+        <div className={styles.topLinks}>
+          <Link className={styles.linkButton} href="/admin">
+            管理画面へ戻るを確認できます。</p>
         <div className={styles.topLinks}>
           <Link className={styles.linkButton} href="/admin">
             管理画面へ戻る
@@ -120,17 +110,5 @@ export default async function AdminManagerPage() {
           </div>
         </div>
 
-        <ManagerMemberTable members={rows} />
-
-        <div className={styles.inlineActions}>
-          <Link className={styles.linkButton} href="/admin/manager/weights">
-            体重一括入力
-          </Link>
-          <Link className={styles.linkButton} href="/admin/manager/match-score">
-            試合スコア入力
-          </Link>
-        </div>
-      </section>
-    </main>
-  );
+        <ManagerMemberTable members={rows} /
 }

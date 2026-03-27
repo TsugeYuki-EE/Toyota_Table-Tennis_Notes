@@ -10,10 +10,6 @@ function isInternalHttpUrl(url: URL): boolean {
   return url.origin === window.location.origin && (url.protocol === "http:" || url.protocol === "https:");
 }
 
-function isMatchScorePath(pathname: string): boolean {
-  return pathname.startsWith("/admin/manager/match-score");
-}
-
 export function NavigationLoadingOverlay() {
   const [startRouteKey, setStartRouteKey] = useState<string | null>(null);
   const pathname = usePathname();
@@ -65,10 +61,6 @@ export function NavigationLoadingOverlay() {
         return;
       }
 
-      if (isMatchScorePath(nextUrl.pathname)) {
-        return;
-      }
-
       setStartRouteKey(currentRouteKey);
     };
 
@@ -100,9 +92,6 @@ export function NavigationLoadingOverlay() {
       }
 
       if (isInternalHttpUrl(actionUrl)) {
-        if (isMatchScorePath(actionUrl.pathname)) {
-          return;
-        }
         setStartRouteKey(currentRouteKey);
       }
     };
@@ -119,8 +108,7 @@ export function NavigationLoadingOverlay() {
   const disableByDataAttr = typeof document !== "undefined" && document.body.dataset.disableGlobalNavLoading === "true";
   const showOverlay = startRouteKey !== null
     && startRouteKey === currentRouteKey
-    && !disableByDataAttr
-    && !isMatchScorePath(pathname);
+    && !disableByDataAttr;
 
   if (!showOverlay) {
     return null;

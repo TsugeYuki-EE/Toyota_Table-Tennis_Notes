@@ -74,17 +74,6 @@ export const selfAttendanceSubmitSchema = z.object({
   comment: z.string().trim().optional(),
 });
 
-// 共有リンクから送信される体重入力です。
-export const weightSubmitSchema = z.object({
-  token: z.string().trim().min(1),
-  weightKg: z.coerce.number().positive("体重は正の値を入力してください"),
-});
-
-// メイン画面から送る自分の体重入力です。
-export const selfWeightSubmitSchema = z.object({
-  weightKg: z.coerce.number().positive("体重は正の値を入力してください"),
-});
-
 // メイン画面から送るフィードバック入力です。
 export const feedbackSubmitSchema = z.object({
   content: z
@@ -94,10 +83,6 @@ export const feedbackSubmitSchema = z.object({
     .max(1000, "フィードバックは1000文字以内で入力してください"),
   redirectTo: z.string().trim().optional(),
 });
-
-// 試合登録フォームです。
-export const matchSchema = z.object({
-  opponent: z.string().trim().min(1, "対戦相手は必須です"),
   matchDate: z.string().trim().regex(dateOrDateTimeRegex, "日時を選択してください"),
   ourScore: z.coerce.number().int().min(0),
   theirScore: z.coerce.number().int().min(0),

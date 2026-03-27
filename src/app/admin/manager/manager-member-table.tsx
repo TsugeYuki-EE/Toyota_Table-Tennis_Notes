@@ -14,8 +14,6 @@ type ManagerMemberRow = {
   monthlyGoal: string | null;
   attendanceRate: number | null;
   scoringRate: number | null;
-  latestWeightKg: number | null;
-  isLatestWeightToday: boolean;
 };
 
 type ManagerMemberTableProps = {
@@ -32,7 +30,6 @@ function roleLabel(role: ManagerMemberRow["role"]): string {
 export function ManagerMemberTable({ members }: ManagerMemberTableProps) {
   const [showAttendanceRate, setShowAttendanceRate] = useState(false);
   const [showScoringRate, setShowScoringRate] = useState(false);
-  const [showLatestWeight, setShowLatestWeight] = useState(false);
   const [showYearlyGoal, setShowYearlyGoal] = useState(false);
   const [showMonthlyGoal, setShowMonthlyGoal] = useState(false);
 
@@ -40,11 +37,10 @@ export function ManagerMemberTable({ members }: ManagerMemberTableProps) {
     let count = 4;
     if (showAttendanceRate) count += 1;
     if (showScoringRate) count += 1;
-    if (showLatestWeight) count += 1;
     if (showYearlyGoal) count += 1;
     if (showMonthlyGoal) count += 1;
     return count;
-  }, [showAttendanceRate, showScoringRate, showLatestWeight, showYearlyGoal, showMonthlyGoal]);
+  }, [showAttendanceRate, showScoringRate, showYearlyGoal, showMonthlyGoal]);
 
   return (
     <>
@@ -64,14 +60,6 @@ export function ManagerMemberTable({ members }: ManagerMemberTableProps) {
             onChange={(event) => setShowScoringRate(event.target.checked)}
           />
           <span>得点率</span>
-        </label>
-        <label className={styles.checkboxLabel}>
-          <input
-            type="checkbox"
-            checked={showLatestWeight}
-            onChange={(event) => setShowLatestWeight(event.target.checked)}
-          />
-          <span>最新体重</span>
         </label>
         <label className={styles.checkboxLabel}>
           <input
@@ -100,7 +88,6 @@ export function ManagerMemberTable({ members }: ManagerMemberTableProps) {
               <th>役職</th>
               {showAttendanceRate ? <th>出席率</th> : null}
               {showScoringRate ? <th>得点率</th> : null}
-              {showLatestWeight ? <th>最新体重</th> : null}
               {showYearlyGoal ? <th>一年の目標</th> : null}
               {showMonthlyGoal ? <th>その月の目標</th> : null}
               <th>アクション</th>
@@ -123,17 +110,6 @@ export function ManagerMemberTable({ members }: ManagerMemberTableProps) {
                 ) : null}
                 {showScoringRate ? (
                   <td>{member.scoringRate == null ? "-" : `${member.scoringRate.toFixed(1)}%`}</td>
-                ) : null}
-                {showLatestWeight ? (
-                  <td>
-                    {member.latestWeightKg == null ? (
-                      "-"
-                    ) : (
-                      <span className={member.isLatestWeightToday ? styles.todayWeightHighlight : undefined}>
-                        {`${member.latestWeightKg.toFixed(1)}kg`}
-                      </span>
-                    )}
-                  </td>
                 ) : null}
                 {showYearlyGoal ? <td>{member.yearlyGoal || "-"}</td> : null}
                 {showMonthlyGoal ? <td>{member.monthlyGoal || "-"}</td> : null}

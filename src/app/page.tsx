@@ -101,7 +101,7 @@ export default async function Home({ searchParams }: HomePageProps) {
   const monthParam = toMonthParam(currentMonth);
   const monthQuery = `?month=${monthParam}`;
 
-  const [events, matches, practiceMenus, activeAnnouncement] = await Promise.all([
+  const [events, practiceMenus, activeAnnouncement] = await Promise.all([
     prisma.attendanceEvent.findMany({
       where: {
         scheduledAt: {
@@ -113,16 +113,6 @@ export default async function Home({ searchParams }: HomePageProps) {
         records: true,
       },
       orderBy: { scheduledAt: "asc" },
-    }),
-    prisma.matchRecord.findMany({
-      where: {
-        attendanceEventId: null,
-        matchDate: {
-          gte: monthStartUtc,
-          lt: nextMonthUtc,
-        },
-      },
-      orderBy: { matchDate: "asc" },
     }),
     prisma.practiceMenu.findMany({
       where: {
@@ -142,38 +132,27 @@ export default async function Home({ searchParams }: HomePageProps) {
     }),
   ]);
 
-  const scheduleMap = new Map<string, Set<"練習" | "試合">>();
-  const eventDetailMap = new Map<string, { practice: string[]; match: string[] }>();
+  const scheduleMap = new Map<string, Set<"練習">>();
+  const eventDetailMap = new Map<string, { practice: string[] }>();
 
   for (const event of events) {
     const key = toDateKey(event.scheduledAt);
-    const current = scheduleMap.get(key) || new Set<"練習" | "試合">();
-    const label = event.eventType === AttendanceEventType.MATCH ? "試合" : "練習";
+    const current = scheduleMap.get(key) || new Set<"練習">();
+    const label = "練習";
     current.add(label);
     scheduleMap.set(key, current);
 
     const detailText = buildEventDetailText(event.matchDetail, event.note);
     if (detailText) {
-      const details = eventDetailMap.get(key) || { practice: [], match: [] };
-      if (label === "試合") {
-        details.match.push(detailText);
-      } else {
-        details.practice.push(detailText);
-      }
+      const details = eventDetailMap.get(key) || { practice: [] };
+      details.practice.push(detailText);
       eventDetailMap.set(key, details);
     }
   }
 
-  for (const match of matches) {
-    const key = toDateKey(match.matchDate);
-    const current = scheduleMap.get(key) || new Set<"練習" | "試合">();
-    current.add("試合");
-    scheduleMap.set(key, current);
-  }
-
   for (const practice of practiceMenus) {
     const key = toDateKey(practice.practiceDate);
-    const current = scheduleMap.get(key) || new Set<"練習" | "試合">();
+    const current = scheduleMap.get(key) || new Set<"練習">();
     current.add("練習");
     scheduleMap.set(key, current);
   }
@@ -270,7 +249,7 @@ export default async function Home({ searchParams }: HomePageProps) {
                   <div className={dayNumberClassName}>{dateParts.day}</div>
                   <div className={styles.dayItems}>
                     {schedules.map((item, index) => {
-                      const detailsByType = item === "試合" ? eventDetails?.match : eventDetails?.practice;
+                      const detailsByType = eventDetails?.practice;
                       const tooltip = detailsByType && detailsByType.length > 0
                         ? detailsByType.join("\n----------------\n")
                         : undefined;
@@ -278,7 +257,7 @@ export default async function Home({ searchParams }: HomePageProps) {
                       return (
                         <span
                           key={`${item}-${index}`}
-                          className={`${styles.badge} ${item === "試合" ? styles.badgeMatch : styles.badgePractice}`}
+                          className={`${styles.badge} ${styles.badgePractice}`}
                           title={tooltip}
                         >
                           {item}

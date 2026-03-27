@@ -37,9 +37,7 @@ export default async function MemberOverviewPage({ params, searchParams }: PageP
   const member = await prisma.member.findUnique({
     where: { id: memberId },
     include: {
-      weights: { orderBy: { submittedAt: "desc" }, take: 1 },
       attendances: true,
-      playerScores: true,
     },
   });
 
@@ -47,13 +45,9 @@ export default async function MemberOverviewPage({ params, searchParams }: PageP
     notFound();
   }
 
-  const latestWeight = member.weights[0] ?? null;
   const attendCount = member.attendances.filter((record) => record.status === "ATTEND").length;
   const absentCount = member.attendances.filter((record) => record.status === "ABSENT").length;
   const lateCount = member.attendances.filter((record) => record.status === "LATE").length;
-  const totalGoals = member.playerScores.reduce((sum, score) => sum + score.goals, 0);
-  const totalShotAttempts = member.playerScores.reduce((sum, score) => sum + score.shotAttempts, 0);
-  const scoringRate = totalShotAttempts === 0 ? null : (totalGoals / totalShotAttempts) * 100;
 
   return (
     <main className={styles.page}>
@@ -65,8 +59,6 @@ export default async function MemberOverviewPage({ params, searchParams }: PageP
       <nav className={styles.nav}>
         <Link className={styles.secondaryLink} href="/admin">管理画面へ戻る</Link>
         <Link className={styles.primaryLink} href={`/admin/members/${member.id}/attendance`}>出席確認</Link>
-        <Link className={styles.primaryLink} href={`/admin/members/${member.id}/weight`}>体重推移</Link>
-        <Link className={styles.primaryLink} href={`/admin/members/${member.id}/scores`}>個人スコア</Link>
       </nav>
 
       {sp.error && (
@@ -146,20 +138,16 @@ export default async function MemberOverviewPage({ params, searchParams }: PageP
         <article className={styles.metricCard}>
           <div className={styles.metricValue}>{latestWeight ? `${latestWeight.weightKg}kg` : "-"}</div>
           <div className={styles.metricLabel}>最新体重 {latestWeight ? <LocalDateTime value={latestWeight.submittedAt} /> : "未登録"}</div>
-        </article>
-        <article className={styles.metricCard}>
-          <div className={styles.metricValue}>{attendCount}</div>
+        </article>attendCount}</div>
           <div className={styles.metricLabel}>出席回数</div>
         </article>
         <article className={styles.metricCard}>
-          <div className={styles.metricValue}>{lateCount}</div>
-          <div className={styles.metricLabel}>遅刻回数</div>
+          <div className={styles.metricValue}>{absentCount}</div>
+          <div className={styles.metricLabel}>欠席回数</div>
         </article>
         <article className={styles.metricCard}>
-          <div className={styles.metricValue}>{scoringRate == null ? "-" : `${scoringRate.toFixed(1)}%`}</div>
-          <div className={styles.metricLabel}>得点率</div>
-        </article>
-      </section>
+          <div className={styles.metricValue}>{lateCount}</div>
+          <div className={styles.metricLabel}>遅刻回数
 
       <section className={styles.grid}>
         <article className={styles.chartCard}>
@@ -179,9 +167,7 @@ export default async function MemberOverviewPage({ params, searchParams }: PageP
             <li>出席記録数: {member.attendances.length}件</li>
             <li>得点記録数: {member.playerScores.length}件</li>
           </ul>
-        </article>
-
-        <article className={styles.chartCard}>
+        </articl出席記録数: {member.attendancard}>
           <h2>個人目標</h2>
           <ul className={styles.tableList}>
             <li>

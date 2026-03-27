@@ -37,7 +37,7 @@ const GUIDE_OVERRIDES: Array<{
     summary: "カレンダー、通達、目標、フィードバック導線をまとめて確認するトップページです。",
     steps: [
       "月送りで予定のある日を探し、日付カードを押して詳細画面へ進みます。",
-      "下部のメニューから体重入力、試合スコア、プロフィール更新へ移動します。",
+      "下部のメニューからプロフィール更新へ移動します。",
     ],
     audience: "member",
   },
@@ -92,59 +92,9 @@ const GUIDE_OVERRIDES: Array<{
     audience: "member",
   },
   {
-    test: (route) => route === "/self/weight",
-    title: "体重入力",
-    summary: "当日の体重とメモを登録するページです。",
-    steps: [
-      "体重を入力し、必要ならメモを追加します。",
-      "保存後に履歴ページで推移を確認します。",
-    ],
-    audience: "member",
-  },
-  {
-    test: (route) => route === "/self/weight-history",
-    title: "体重履歴",
-    summary: "体重の時系列推移を確認するページです。",
-    steps: [
-      "グラフで傾向を確認します。",
-      "誤入力があれば対象データを削除します。",
-    ],
-    audience: "member",
-  },
-  {
-    test: (route) => route === "/match-scores",
-    title: "試合スコア一覧",
-    summary: "試合ごとの結果や集計を閲覧するページです。",
-    steps: [
-      "一覧から対象試合を選びます。",
-      "必要に応じて試合詳細ページへ進みます。",
-    ],
-    audience: "member",
-  },
-  {
-    test: (route) => route.startsWith("/match-scores/"),
-    title: "試合スコア詳細",
-    summary: "1試合の詳細スタッツを確認するページです。",
-    steps: [
-      "前半・後半のスコア推移を確認します。",
-      "選手別スタッツや記録内容を確認します。",
-    ],
-    audience: "member",
-  },
-  {
-    test: (route) => route === "/player-scores/new",
-    title: "個人得点入力",
-    summary: "試合ごとの個人得点やシュート本数を入力するページです。",
-    steps: [
-      "試合を選択して得点・試投数を入力します。",
-      "必要に応じてメモを残して保存します。",
-    ],
-    audience: "member",
-  },
-  {
     test: (route) => route.startsWith("/l/"),
     title: "共有リンク入力",
-    summary: "配布されたトークンURLから出席または体重を入力するページです。",
+    summary: "配布されたトークンURLから出席を入力するページです。",
     steps: [
       "受け取ったURLを開いて入力画面へ進みます。",
       "必要項目を送信すると期限内に1回分が記録されます。",
@@ -172,46 +122,6 @@ const GUIDE_OVERRIDES: Array<{
     audience: "admin",
   },
   {
-    test: (route) => route === "/admin/manager",
-    title: "マネージャーウィンドウ",
-    summary: "出席率、得点率、最新体重などを俯瞰するページです。",
-    steps: [
-      "気になるメンバーの状態を確認します。",
-      "詳細入力ページへ遷移してデータ更新します。",
-    ],
-    audience: "admin",
-  },
-  {
-    test: (route) => route === "/admin/manager/weights",
-    title: "体重一括入力",
-    summary: "複数メンバーの体重をまとめて記録するページです。",
-    steps: [
-      "対象メンバーの体重を一覧入力します。",
-      "保存後に反映内容を履歴で確認します。",
-    ],
-    audience: "admin",
-  },
-  {
-    test: (route) => route === "/admin/manager/match-score",
-    title: "試合スコア入力",
-    summary: "試合結果のチームスコアと付随情報を入力するページです。",
-    steps: [
-      "対象試合を選んでスコアを入力します。",
-      "必要なら詳細入力画面へ進みます。",
-    ],
-    audience: "admin",
-  },
-  {
-    test: (route) => route === "/admin/manager/match-score/input",
-    title: "試合スコア詳細入力",
-    summary: "前後半の詳細スタッツや出来事を記録するページです。",
-    steps: [
-      "前半・後半ごとのチームデータを入力します。",
-      "保存後に表示画面で数値の整合性を確認します。",
-    ],
-    audience: "admin",
-  },
-  {
     test: (route) => route === "/admin/release-notes",
     title: "リリースノート管理",
     summary: "admin ユーザーがリリースノートを作成するページです。",
@@ -232,32 +142,12 @@ const GUIDE_OVERRIDES: Array<{
     audience: "admin",
   },
   {
-    test: (route) => route.startsWith("/admin/members/") && route.endsWith("/weight"),
-    title: "部員別体重推移",
-    summary: "部員個別の体重推移を確認するページです。",
-    steps: [
-      "グラフや履歴の増減を確認します。",
-      "必要に応じて入力漏れや異常値を点検します。",
-    ],
-    audience: "admin",
-  },
-  {
-    test: (route) => route.startsWith("/admin/members/") && route.endsWith("/scores"),
-    title: "部員別得点履歴",
-    summary: "部員個別の得点・シュート履歴を確認するページです。",
-    steps: [
-      "試合ごとの得点状況を確認します。",
-      "分析したい試合は詳細ページで深掘りします。",
-    ],
-    audience: "admin",
-  },
-  {
     test: (route) => route.startsWith("/admin/members/"),
     title: "部員詳細ダッシュボード",
     summary: "部員単位の詳細データへアクセスするハブページです。",
     steps: [
       "基本情報と各種サマリーを確認します。",
-      "出席、体重、得点など個別画面へ移動します。",
+      "出席など個別画面へ移動します。",
     ],
     audience: "admin",
   },

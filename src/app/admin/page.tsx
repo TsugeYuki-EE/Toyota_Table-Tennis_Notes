@@ -102,28 +102,6 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
       </section>
 
       <section className={styles.card}>
-        <h2>マネージャーウィンドウ</h2>
-        <p className={styles.meta}>部員一覧に加えて、出席率・累計得点・最新体重を表形式で確認できます。</p>
-        <div className={styles.inlineActions}>
-          <Link className={styles.linkButton} href="/admin/manager">
-            マネージャー画面へ
-          </Link>
-        </div>
-      </section>
-
-      {canManageSuperAdminFeatures && (
-        <section className={styles.card}>
-          <h2>admin 専用機能</h2>
-          <p className={styles.meta}>admin ユーザー専用の管理機能は、専用ページに集約しています。</p>
-          <div className={styles.inlineActions}>
-            <Link className={styles.linkButton} href="/admin/super-admin">
-              admin用画面に遷移
-            </Link>
-          </div>
-        </section>
-      )}
-
-      <section className={styles.card}>
         <div className={styles.cardHeader}>
           <div>
             <h2>部員一覧</h2>

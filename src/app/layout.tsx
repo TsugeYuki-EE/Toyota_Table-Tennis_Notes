@@ -19,7 +19,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Toyota Table Tennis Notes",
-  description: "卓球部の出席・体重・試合スコア管理アプリ",
+  description: "卓球部の出席・管理アプリ",
 };
 
 export default function RootLayout({
