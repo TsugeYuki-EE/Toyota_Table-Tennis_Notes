@@ -27,7 +27,7 @@ export function canAccessAdminByMember(member: { nickname?: string | null; role?
 export async function getAuthorizedAdminMember() {
   const member = await getSessionMember();
 
-  if (!canAccessAdminByMember(member)) {
+  if (!member || !canAccessAdminByMember(member)) {
     return null;
   }
 
